@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QDesktopWidget, QSizePolicy
 from PyQt5.QtCore import Qt, QCoreApplication, QTimer
 from PyQt5.QtGui import QFontDatabase, QFont, QCursor
+from PyQt5 import QtSvg
 import datetime
 import json
 import requests
@@ -37,10 +38,9 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.setSpacing(30)
-        layout.setContentsMargins(20, 10, 10, 70)
-        src_path,_ = os.path.split(os.path.realpath(__file__))
-        fontID = QFontDatabase.addApplicationFont(os.path.join(src_path, "resources/Rubik-VariableFont_wght.ttf"))
-        print(fontID, QFontDatabase.applicationFontFamilies(fontID))
+        layout.setContentsMargins(30, 10, 10, 70)
+        self.src_path = os.path.dirname(os.path.realpath(__file__))
+        fontID = QFontDatabase.addApplicationFont(os.path.join(self.src_path, "resources/Rubik-VariableFont_wght.ttf"))
         font = QFontDatabase.applicationFontFamilies(fontID)[0]
         font40 = QFont(font, 40)
         font20 = QFont(font, 20)
@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
         for action in config["actions"]:
             if staff_states.get(staffID, 0) not in action["requiredState"]:
                 continue
-            button = QPushButton(action["text"])    
+            button = QPushButton(action["text"])
             button.setStyleSheet("background-color: #6000FF; border: 1px solid white; border-radius: 3px; color: white;")
             button.setFont(font20)
             button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
@@ -73,10 +73,19 @@ class MainWindow(QMainWindow):
         self.move(position)
 
     def action_clicked(self, staffID, state):
+        print("success")
         staff_states[staffID] = state
         send_api_signal()
-        print("Quit")
-        close(self)
+        minHeightWidth = min(self.height(), self.width())
+        svgWidget = QtSvg.QSvgWidget(os.path.join(self.src_path, "resources/checkmark.svg"))
+        svgWidget.setFixedSize(minHeightWidth - 40, minHeightWidth - 40)
+        layout = QVBoxLayout()
+        layout.addWidget(svgWidget)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+        QTimer.singleShot(1500, lambda window=self: close(window))
 
 def send_api_signal():
     requests.post(config["api"]["url"])

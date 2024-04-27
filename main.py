@@ -97,8 +97,6 @@ def detect(cam=0):
 
                 if detect_dict[min_key] < thres:
                     return min_key
-                print("unsure")
-
 
 if __name__ == "__main__":
     while True:
