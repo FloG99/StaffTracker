@@ -1,0 +1,38 @@
+{
+    "greetings": [
+        {"start": 5, "end": 11, "message": "Guten Morgen"},
+        {"start": 11, "end": 13, "message": "Mahlzeit"},
+        {"start": 16, "end": 24, "message": "Guten Abend"},
+        {"start": 0, "end": 24, "message": "Guten Tag"}
+    ],
+    "staff": {
+        "Andi": {"nickname": "Andi", "apiData": ["aaaaa"]},
+        "Flo": {"nickname": "Flo", "apiData": ["bbb"]}
+    },
+    "actions": [
+            {
+                "text": "Zeiterfassung starten",
+                "state": 1,
+                "requiredState": [0] 
+            },
+            {
+                "text": "Zeiterfassung pausieren",
+                "state": 2,
+                "requiredState": [1]
+            },
+            {
+                "text": "Zeiterfassung fortsetzen",
+                "state": 1,
+                "requiredState": [2]
+            },
+            {
+                "text": "Tag beenden",
+                "state": 0,
+                "requiredState": [1]
+            }
+    ],
+    "api": {
+        "url": "https://www.w3schools.com/python/demopage.php",
+        "key": "secret"
+    }
+}
